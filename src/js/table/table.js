@@ -1,10 +1,14 @@
 import React, { Component } from "react";
 import TableRow from "./tableRow";
+import "./table.scss";
 
-import "./dataTable.less";
-
-export default class DataTable extends Component {
+export default class Table extends Component {
   render() {
+    let tableRows = this.props.data;
+    tableRows = tableRows.map(item => {
+      return <TableRow key={item.id} data={item} />;
+    });
+
     return (
       <table className="table">
         <thead className="table__header">
@@ -16,9 +20,7 @@ export default class DataTable extends Component {
             <th className="table__table-cell">phone</th>
           </tr>
         </thead>
-        <tbody className="table__body">
-          <TableRow rowData={this.props.data} />
-        </tbody>
+        <tbody className="table__body">{tableRows}</tbody>
       </table>
     );
   }

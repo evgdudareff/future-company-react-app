@@ -1,29 +1,23 @@
 import React, { Component } from "react";
-
-import DataTable from "./js/table/dataTable";
+import Table from "./js/table/table";
+import getDataAsync from "./js/common/getDataAsync";
 
 class App extends Component {
   state = {
-    data: [
-      {
-        id: 101,
-        firstName: "Sue",
-        lastName: "Corson",
-        email: "DWhalley@in.gov",
-        phone: "(612)211-6296",
-        address: {
-          streetAddress: "9792 Mattis Ct",
-          city: "Waukesha",
-          state: "WI",
-          zip: "22178"
-        },
-        description: "et lacus magna dolor..."
-      }
-    ]
+    data: []
   };
 
+  componentDidMount() {
+    //Получить данные
+    getDataAsync(
+      "http://www.filltext.com/?rows=32&id=%7Bnumber%7C1000%7D&firstName=%7BfirstName%7D&lastName=%7BlastName%7D&email=%7Bemail%7D&phone=%7Bphone%7C(xxx)xxx-xx-xx%7D&address=%7BaddressObject%7D&description=%7Blorem%7C32%7D"
+    ).then(data => {
+      this.setState({ data });
+    });
+  }
+
   render() {
-    return <DataTable data={this.state.data[0]} />;
+    return <Table data={this.state.data} />;
   }
 }
 

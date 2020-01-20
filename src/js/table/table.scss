@@ -1,0 +1,20 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #f0f0f0;
+  text-align: center;
+
+  &__header {
+    color: blue;
+
+    &:hover {
+      background: #f5e0cd;
+      color: #ce232a;
+    }
+  }
+
+  &__table-cell {
+    border: 1px solid #333;
+    padding: 3px;
+  }
+}
