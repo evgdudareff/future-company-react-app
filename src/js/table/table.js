@@ -5,8 +5,8 @@ import "./table.scss";
 export default class Table extends Component {
   render() {
     let tableRows = this.props.data;
-    tableRows = tableRows.map(item => {
-      return <TableRow key={item.id} data={item} />;
+    tableRows = tableRows.map((item, index) => {
+      return <TableRow key={index} data={item} />;
     });
 
     return (

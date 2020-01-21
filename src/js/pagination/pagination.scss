@@ -1,0 +1,17 @@
+.pagination {
+  display: flex;
+  justify-content: space-evenly;
+  list-style: none;
+
+  &__prev {
+    &:before {
+      content: "<";
+    }
+  }
+
+  &__next {
+    &:after {
+      content: ">";
+    }
+  }
+}
