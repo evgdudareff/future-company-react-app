@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Table from "./blocks/table/table";
+import { Table, sortByField } from "./blocks/table/table";
 import { Pagination, showPage } from "./blocks/pagination/pagination";
 import getDataAsync from "./blocks/common/getDataAsync";
 import "./app.scss";
@@ -24,7 +24,7 @@ class App extends Component {
     //Получить данные
     getDataAsync(dataLinkLarge).then(data => {
       const shownData = data.slice(
-        this.firstItemIndex,
+        this.state.firstItemIndex,
         this.state.itemsPerPage
       );
       const maxPages = data.length / this.state.itemsPerPage;
@@ -45,7 +45,10 @@ class App extends Component {
     return (
       <div className="app__content">
         <div className={wrapperClassName}>
-          <Table data={this.state.shownData} />
+          <Table
+            shownData={this.state.shownData}
+            onHeaderClick={sortByField.bind(this)}
+          />
           <Pagination
             currPage={this.state.currPage}
             maxPages={this.state.maxPages}
