@@ -11,27 +11,14 @@ const dataLinkLarge =
 
 class App extends Component {
   state = {
-    data: [], //данные, полученные с сервера
-    shownData: [], //показываемые на данный момент данные
-    currPage: 1, //текущая страница
-    maxPages: 1, //максимальное число страниц
-    firstItemIndex: 0, //начальный индекс показываемых данных (массив)
-    itemsPerPage: 25, //количество элементов на странице
-    visible: false //показывается приложение или нет (готово? : показывается)
+    dataFromServer: [], //данные, полученные с сервера
+    visible: false
   };
 
   componentDidMount() {
     //Получить данные
     getDataAsync(dataLinkLarge).then(data => {
-      const shownData = data.slice(
-        this.state.firstItemIndex,
-        this.state.itemsPerPage
-      );
-      const maxPages = data.length / this.state.itemsPerPage;
-      this.setState({ data, shownData, maxPages });
-
-      this.setState({ visible: true });
-      document.querySelector(".app__loader").remove();
+      this.setState({ dataFromServer: data, visible: true });
     });
   }
 
@@ -40,25 +27,21 @@ class App extends Component {
     let wrapperClassName = "content__wrapper";
     if (this.state.visible) {
       wrapperClassName += "content__wrapper_ready";
-    }
-
-    return (
-      <div className="app__content">
-        <div className={wrapperClassName}>
-          <Table
-            shownData={this.state.shownData}
-            onHeaderClick={sortByField.bind(this)}
-          />
-          <Pagination
+      return (
+        <div className="app__content">
+          <div className={wrapperClassName}>
+            <Table data={this.state.dataFromServer} itemsPerPage={25} />
+            {/* <Pagination
             currPage={this.state.currPage}
             maxPages={this.state.maxPages}
             onNextPageClick={showPage.bind(this, "next")}
             onPrevPageClick={showPage.bind(this, "prev")}
-          />
+          /> */}
+          </div>
+          {/* <div className="app__loader"></div> */}
         </div>
-        <div className="app__loader"></div>
-      </div>
-    );
+      );
+    } else return <div className="app__loader"></div>;
   }
 }
 

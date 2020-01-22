@@ -4,6 +4,8 @@ $primary-color: #0f8fee;
 .pagination {
   display: flex;
   justify-content: space-evenly;
+  flex-wrap: wrap;
+  min-width: 300px;
   margin-top: 20px;
   font-family: Arial, sans-serif;
 
