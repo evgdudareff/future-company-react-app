@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import Table from "./js/table/table";
-import Pagination from "./js/pagination/pagination";
-import getDataAsync from "./js/common/getDataAsync";
+import Table from "./blocks/table/table";
+import { Pagination, showPage } from "./blocks/pagination/pagination";
+import getDataAsync from "./blocks/common/getDataAsync";
 import "./app.scss";
 
 const dataLinkSmall =
@@ -19,36 +19,6 @@ class App extends Component {
     itemsPerPage: 25, //количество элементов на странице
     visible: false //показывается приложение или нет (готово? : показывается)
   };
-
-  //Метод: перелистывание страниц
-  showPage(dir) {
-    //логика в зависимости от направления
-    if (dir === "next") {
-      const from = this.state.firstItemIndex + this.state.itemsPerPage;
-      const to = from + this.state.itemsPerPage;
-
-      if (this.state.currPage < this.state.maxPages) {
-        this.setState({
-          currPage: this.state.currPage + 1,
-          firstItemIndex: from,
-          shownData: this.state.data.slice(from, to)
-        });
-      }
-    } else if (dir === "prev") {
-      const from = this.state.firstItemIndex - this.state.itemsPerPage;
-      const to = this.state.firstItemIndex;
-
-      if (this.state.currPage !== 1) {
-        this.setState({
-          currPage: this.state.currPage - 1,
-          firstItemIndex: from,
-          shownData: this.state.data.slice(from, to)
-        });
-      }
-    } else {
-      return;
-    }
-  }
 
   componentDidMount() {
     //Получить данные
@@ -79,8 +49,8 @@ class App extends Component {
           <Pagination
             currPage={this.state.currPage}
             maxPages={this.state.maxPages}
-            onNextPageClick={this.showPage.bind(this, "next")}
-            onPrevPageClick={this.showPage.bind(this, "prev")}
+            onNextPageClick={showPage.bind(this, "next")}
+            onPrevPageClick={showPage.bind(this, "prev")}
           />
         </div>
         <div className="app__loader"></div>
