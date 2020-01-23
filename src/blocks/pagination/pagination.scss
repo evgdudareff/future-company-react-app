@@ -45,11 +45,9 @@ $primary-color: #0f8fee;
   }
 
   &__curr-page {
-    @extend .pagination__button;
-    cursor: default;
+    color: $primary-color;
     align-items: center;
-    display: flex;
-    border-radius: 1px;
+    line-height: $control-height;
 
     &:hover {
       box-shadow: none;

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import TableRow from "./tableRow";
+import Pagination from "../pagination/pagination";
 import "./table.scss";
 
 //Храним текущий порядок сортировки (доступен из замыкания)
@@ -63,6 +63,7 @@ export class Table extends Component {
     //отсортировать массив по полю
     const data = [...this.state.data];
 
+    //получить требуемый текущий тип сортировки для поля
     let field = headerFields.find(field => field.fieldName === fieldName);
     let sortType = field.sortType;
 
@@ -75,6 +76,7 @@ export class Table extends Component {
       sortType = "ascending";
     }
 
+    //поменять тип сортировки для поля
     field.sortType = sortType;
     this.setState({ data });
 
@@ -101,7 +103,7 @@ export class Table extends Component {
     //Получить требуемое количество данных на страницу
     const currPageData = this.state.data.slice(
       this.state.firstItemIndex,
-      this.state.itemsPerPage
+      this.state.itemsPerPage * this.state.currPage
     );
 
     //Получить строку для заголовка таблицы (thead)
@@ -118,10 +120,13 @@ export class Table extends Component {
     );
 
     return (
-      <table className="table">
-        <thead className="table__header">{headerTableRow}</thead>
-        <tbody className="table__body">{tableRows}</tbody>
-      </table>
+      <div>
+        <table className="table">
+          <thead className="table__header">{headerTableRow}</thead>
+          <tbody className="table__body">{tableRows}</tbody>
+        </table>
+        <Pagination useContext={this} />
+      </div>
     );
   }
 }

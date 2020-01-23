@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { Table, sortByField } from "./blocks/table/table";
-import { Pagination, showPage } from "./blocks/pagination/pagination";
+import { Table } from "./blocks/table/table";
 import getDataAsync from "./blocks/common/getDataAsync";
 import "./app.scss";
 
@@ -16,7 +15,7 @@ class App extends Component {
   };
 
   componentDidMount() {
-    //Получить данные
+    //Получить данные и сохранить их в компоненте
     getDataAsync(dataLinkLarge).then(data => {
       this.setState({ dataFromServer: data, visible: true });
     });
@@ -38,7 +37,6 @@ class App extends Component {
             onPrevPageClick={showPage.bind(this, "prev")}
           /> */}
           </div>
-          {/* <div className="app__loader"></div> */}
         </div>
       );
     } else return <div className="app__loader"></div>;
