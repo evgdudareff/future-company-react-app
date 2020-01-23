@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Pagination from "../pagination/pagination";
+import FilterField from "../filterField/filterField";
 import "./table.scss";
 
 //Храним текущий порядок сортировки (доступен из замыкания)
@@ -16,19 +17,26 @@ export class Table extends Component {
     super(props);
     this.state = {
       data: props.data, //данные, полученные с сервера
+      filteredData: null,
       currPage: 1, //текущая страница
       itemsPerPage: 25, //количество элементов на странице: задаётся или можно принимать из App.js
-      maxPages: props.data.length / props.itemsPerPage, //максимальное число страниц
+      maxPages: Math.ceil(props.data.length / props.itemsPerPage), //максимальное число страниц
       firstItemIndex: 0 //начальный индекс показываемых данных (массив)
     };
   }
 
   //Получить строку заголовка таблицы (для header body)
   getHeaderTableRow(headerFields, trClassName, thClassName, onThClickHandler) {
-    let headerTableRow = headerFields.map(field => {
-      thClassName += ` table__table-cell_${field.sortType}`;
+    let headerTableRow = headerFields.map((field, index) => {
+      let thClassNameResult =
+        thClassName + ` table__table-cell_${field.sortType}`;
+
       return (
-        <th className={thClassName} onClick={onThClickHandler}>
+        <th
+          key={index}
+          className={thClassNameResult}
+          onClick={onThClickHandler}
+        >
           {field.fieldName}
         </th>
       );
@@ -37,9 +45,9 @@ export class Table extends Component {
   }
 
   //Получить строку таблицы (для tbody)
-  getTableRow(dataItem, trClassName, tdClassName) {
+  getTableRow(dataItem, trClassName, tdClassName, index) {
     return (
-      <tr className={trClassName}>
+      <tr key={index} className={trClassName}>
         <td className={tdClassName}>{dataItem.id}</td>
         <td className={tdClassName}>{dataItem.firstName}</td>
         <td className={tdClassName}>{dataItem.lastName}</td>
@@ -60,8 +68,10 @@ export class Table extends Component {
     //получить поле, по которому будем сортировать
     const fieldName = target.innerHTML;
 
-    //отсортировать массив по полю
-    const data = [...this.state.data];
+    //есть отфильтрованные данные? работать с ними : иначе с изначальными
+    let data = this.state.filteredData
+      ? [...this.state.filteredData]
+      : [...this.state.data];
 
     //получить требуемый текущий тип сортировки для поля
     let field = headerFields.find(field => field.fieldName === fieldName);
@@ -78,7 +88,13 @@ export class Table extends Component {
 
     //поменять тип сортировки для поля
     field.sortType = sortType;
-    this.setState({ data });
+
+    //есть отфильтрованные данные? показать таблицу с ними : иначе с изначальными
+    if (this.state.filteredData) {
+      this.setState({ filteredData: data });
+    } else {
+      this.setState({ data });
+    }
 
     //функция сортировки по возрастанию
     function ascendingSort(cell1, cell2) {
@@ -100,8 +116,13 @@ export class Table extends Component {
   }
 
   render() {
+    //есть отфильтрованные данные? работать с ними : иначе с изначальными
+    const data = this.state.filteredData
+      ? [...this.state.filteredData]
+      : [...this.state.data];
+
     //Получить требуемое количество данных на страницу
-    const currPageData = this.state.data.slice(
+    const currPageData = data.slice(
       this.state.firstItemIndex,
       this.state.itemsPerPage * this.state.currPage
     );
@@ -115,12 +136,13 @@ export class Table extends Component {
     );
 
     //Получить строки таблицы (tbody)
-    const tableRows = currPageData.map(dataItem =>
-      this.getTableRow(dataItem, "table__table-row", "table__table-cell")
+    let tableRows = currPageData.map((dataItem, index) =>
+      this.getTableRow(dataItem, "table__table-row", "table__table-cell", index)
     );
 
     return (
       <div>
+        <FilterField useContext={this} />
         <table className="table">
           <thead className="table__header">{headerTableRow}</thead>
           <tbody className="table__body">{tableRows}</tbody>

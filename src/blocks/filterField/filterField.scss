@@ -1,21 +1,24 @@
 $control-height: 32px;
 $primary-color: #0f8fee;
 
-.pagination {
-  display: flex;
-  justify-content: space-evenly;
-  flex-wrap: wrap;
-  min-width: 300px;
-  margin-top: 20px;
-  font-family: Arial, sans-serif;
+.filter-field-block {
+  margin-bottom: 10px;
 
-  &__button {
+  &__search-field {
+    box-sizing: border-box;
+    height: $control-height;
+    display: inline-block;
+    padding: 0 15px;
+    outline: none;
+  }
+
+  &__search-button {
     box-sizing: border-box;
     height: $control-height;
     display: inline-block;
     padding: 0 15px;
     border: 1px solid transparent;
-    border-radius: 3px;
+    /* border-radius: 3px; */
     background: $primary-color;
     text-align: center;
     color: white;
@@ -34,27 +37,11 @@ $primary-color: #0f8fee;
     &:active {
       box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
     }
-
-    &_prev {
-      &:before {
-        content: "<";
-      }
-    }
-
-    &_next {
-      &:after {
-        content: ">";
-      }
-    }
   }
 
-  &__curr-page {
-    color: $primary-color;
-    align-items: center;
-    line-height: $control-height;
-
-    &:hover {
-      box-shadow: none;
-    }
+  &__reset-button {
+    @extend .filter-field-block__search-button;
+    background-color: darkgrey;
+    margin-left: 5px;
   }
 }

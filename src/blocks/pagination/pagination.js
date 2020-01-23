@@ -6,6 +6,13 @@ import "./pagination.scss";
 export default class Pagination extends Component {
   //Метод: отобразить страницу таблицы (след/пред)
   showPage(dir, tableState, tableContext) {
+    //есть отфильтрованные данные? работать с ними : иначе с изначальными
+    const dataLength = tableState.filteredData
+      ? tableState.filteredData.length
+      : tableState.data.length;
+
+    const maxPages = Math.ceil(dataLength / tableState.itemsPerPage);
+
     //логика в зависимости от направления
     if (dir === "next") {
       const from = tableState.firstItemIndex + tableState.itemsPerPage;
@@ -13,7 +20,8 @@ export default class Pagination extends Component {
       if (tableState.currPage < tableState.maxPages) {
         tableContext.setState({
           currPage: tableState.currPage + 1,
-          firstItemIndex: from
+          firstItemIndex: from,
+          maxPages
         });
       }
     } else if (dir === "prev") {
@@ -22,7 +30,8 @@ export default class Pagination extends Component {
       if (tableState.currPage !== 1) {
         tableContext.setState({
           currPage: tableState.currPage - 1,
-          firstItemIndex: from
+          firstItemIndex: from,
+          maxPages
         });
       }
     } else {
@@ -42,7 +51,11 @@ export default class Pagination extends Component {
 
     if (tableState.currPage === 1) {
       prevBtnClass += " pagination__button_disabled";
-    } else if (tableState.currPage === tableState.maxPages) {
+    }
+    if (
+      tableState.currPage === tableState.maxPages ||
+      tableState.maxPages === 1
+    ) {
       nextBtnClass += " pagination__button_disabled";
     }
 

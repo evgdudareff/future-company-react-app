@@ -16,7 +16,7 @@ class App extends Component {
 
   componentDidMount() {
     //Получить данные и сохранить их в компоненте
-    getDataAsync(dataLinkLarge).then(data => {
+    getDataAsync(dataLinkSmall).then(data => {
       this.setState({ dataFromServer: data, visible: true });
     });
   }
@@ -30,12 +30,6 @@ class App extends Component {
         <div className="app__content">
           <div className={wrapperClassName}>
             <Table data={this.state.dataFromServer} itemsPerPage={25} />
-            {/* <Pagination
-            currPage={this.state.currPage}
-            maxPages={this.state.maxPages}
-            onNextPageClick={showPage.bind(this, "next")}
-            onPrevPageClick={showPage.bind(this, "prev")}
-          /> */}
           </div>
         </div>
       );
