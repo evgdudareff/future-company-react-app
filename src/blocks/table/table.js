@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Pagination from "../pagination/pagination";
 import FilterField from "../filterField/filterField";
+import AddTableRow from "./addTableRow";
 import "./table.scss";
 
 //Храним текущий порядок сортировки (доступен из замыкания)
@@ -143,6 +144,7 @@ export class Table extends Component {
     return (
       <div>
         <FilterField useContext={this} />
+        <AddTableRow useContext={this} />
         <table className="table">
           <thead className="table__header">{headerTableRow}</thead>
           <tbody className="table__body">{tableRows}</tbody>

@@ -39,7 +39,7 @@ export default class FilterField extends Component {
 
   //Метод: сбрасывает фильтр к передаваевомого контекста таблицы
   resetButtonHandler() {
-    if (!this.props.useContext || !this.state.inputValue) return;
+    if (!this.props.useContext) return;
     const tableContext = this.props.useContext;
 
     const maxPages = Math.ceil(

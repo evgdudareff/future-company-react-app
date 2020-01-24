@@ -41,7 +41,7 @@ $primary-color: #0f8fee;
 
   &__reset-button {
     @extend .filter-field-block__search-button;
-    background-color: darkgrey;
+    background-color: tomato;
     margin-left: 5px;
   }
 }
