@@ -48,4 +48,13 @@
       }
     }
   }
+
+  &__table-row {
+    &:hover {
+      background-color: rgba(15, 143, 238, 0.4);
+    }
+    &:active {
+      background-color: tomato;
+    }
+  }
 }

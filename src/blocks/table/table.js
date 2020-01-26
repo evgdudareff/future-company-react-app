@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import Pagination from "../pagination/pagination";
 import FilterField from "../filterField/filterField";
 import AddTableRow from "./addTableRow";
+import getTableRowInfo from "./getTableRowInfo";
+
 import "./table.scss";
 
 //Храним текущий порядок сортировки (доступен из замыкания)
@@ -18,15 +20,16 @@ export class Table extends Component {
     super(props);
     this.state = {
       data: props.data, //данные, полученные с сервера
-      filteredData: null,
+      filteredData: null, //данные, прошедшие фильтрацию и готовые к отображению
       currPage: 1, //текущая страница
-      itemsPerPage: 25, //количество элементов на странице: задаётся или можно принимать из App.js
+      itemsPerPage: props.itemsPerPage, //количество элементов на странице: задаётся или можно принимать из App.js
       maxPages: Math.ceil(props.data.length / props.itemsPerPage), //максимальное число страниц
-      firstItemIndex: 0 //начальный индекс показываемых данных (массив)
+      firstItemIndex: 0, //начальный индекс показываемых данных (массив),
+      InfoBlockId: null // Id выбранной строки таблицы для более подробного отображения
     };
   }
 
-  //Получить строку заголовка таблицы (для header body)
+  //Метод: получить строку заголовка таблицы (для header body)
   getHeaderTableRow(headerFields, trClassName, thClassName, onThClickHandler) {
     let headerTableRow = headerFields.map((field, index) => {
       let thClassNameResult =
@@ -45,28 +48,39 @@ export class Table extends Component {
     return <tr className={trClassName}>{headerTableRow}</tr>;
   }
 
-  //Получить строку таблицы (для tbody)
-  getTableRow(dataItem, trClassName, tdClassName, index) {
+  //Метод: получить строку таблицы (для tbody)
+  getTableRow(dataItem, trClassName, tdClassName, index, onThClickHandler) {
+    let tdIdClassName = `${tdClassName} " js-id-cell`;
     return (
       <tr key={index} className={trClassName}>
-        <td className={tdClassName}>{dataItem.id}</td>
-        <td className={tdClassName}>{dataItem.firstName}</td>
-        <td className={tdClassName}>{dataItem.lastName}</td>
-        <td className={tdClassName}>{dataItem.email}</td>
-        <td className={tdClassName}>{dataItem.phone}</td>
+        <td className={tdIdClassName} onClick={onThClickHandler}>
+          {dataItem.id}
+        </td>
+        <td className={tdClassName} onClick={onThClickHandler}>
+          {dataItem.firstName}
+        </td>
+        <td className={tdClassName} onClick={onThClickHandler}>
+          {dataItem.lastName}
+        </td>
+        <td className={tdClassName} onClick={onThClickHandler}>
+          {dataItem.email}
+        </td>
+        <td className={tdClassName} onClick={onThClickHandler}>
+          {dataItem.phone}
+        </td>
       </tr>
     );
   }
 
-  //Сортировка таблицы по полю в thead (по клику)
+  //Метод: сортировка таблицы по полю в thead (по клику)
   sortByField(e) {
-    // получить поле, по которому кликнули
+    // получить заголовок поля, по которому кликнули
     let target = e.target;
     if (!target.classList.contains("table__table-cell_header")) {
       return;
     }
 
-    //получить поле, по которому будем сортировать
+    //получить имя поля, по которому будем сортировать
     const fieldName = target.innerHTML;
 
     //есть отфильтрованные данные? работать с ними : иначе с изначальными
@@ -74,7 +88,7 @@ export class Table extends Component {
       ? [...this.state.filteredData]
       : [...this.state.data];
 
-    //получить требуемый текущий тип сортировки для поля
+    //получить требуемый (на текущий момент) тип сортировки для поля
     let field = headerFields.find(field => field.fieldName === fieldName);
     let sortType = field.sortType;
 
@@ -87,7 +101,7 @@ export class Table extends Component {
       sortType = "ascending";
     }
 
-    //поменять тип сортировки для поля
+    //переключить тип сортировки для поля
     field.sortType = sortType;
 
     //есть отфильтрованные данные? показать таблицу с ними : иначе с изначальными
@@ -116,6 +130,25 @@ export class Table extends Component {
     }
   }
 
+  //Метод: получить index строки, по которой был клик
+  getTrIndexByClick(e) {
+    let target = e.target;
+    //поднять на уровень ноды tr
+    while (!target.classList.contains("table__table-row")) {
+      target = target.parentNode;
+    }
+    //взять информацию об Id из дочернего td с js-классом js-id-cell
+    let dataItemId = [].find.call(target.children, cell =>
+      cell.classList.contains("js-id-cell")
+    );
+    if (!dataItemId) return;
+
+    dataItemId = Number(dataItemId.innerHTML);
+
+    //передать новые данные в компонент
+    this.setState({ InfoBlockId: dataItemId });
+  }
+
   render() {
     //есть отфильтрованные данные? работать с ними : иначе с изначальными
     const data = this.state.filteredData
@@ -138,8 +171,27 @@ export class Table extends Component {
 
     //Получить строки таблицы (tbody)
     let tableRows = currPageData.map((dataItem, index) =>
-      this.getTableRow(dataItem, "table__table-row", "table__table-cell", index)
+      this.getTableRow(
+        dataItem,
+        "table__table-row",
+        "table__table-cell",
+        index,
+        this.getTrIndexByClick.bind(this)
+      )
     );
+
+    //Получить блок информации при клике при необходимости
+    let infoBlock = null;
+    if (this.state.InfoBlockId !== null) {
+      //получить объект с данными
+      const dataItem = this.state.data.find(
+        dataItem => Number(dataItem.id) === this.state.InfoBlockId
+      );
+
+      //передать контекст таблицы
+      const tableContext = this;
+      infoBlock = getTableRowInfo(dataItem, tableContext);
+    }
 
     return (
       <div>
@@ -149,6 +201,7 @@ export class Table extends Component {
           <thead className="table__header">{headerTableRow}</thead>
           <tbody className="table__body">{tableRows}</tbody>
         </table>
+        {infoBlock}
         <Pagination useContext={this} />
       </div>
     );

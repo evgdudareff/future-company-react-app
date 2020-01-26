@@ -27,6 +27,7 @@ $primary-color: #0f8fee;
     user-select: none;
     cursor: pointer;
     outline: none;
+    font-size: medium;
 
     &_disabled {
       pointer-events: none;
