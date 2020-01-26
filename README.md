@@ -1,4 +1,4 @@
-## Задание [здесь] (https://github.com/fugr-ru/frontend-javascript-test)
+## Задание [здесь](https://github.com/fugr-ru/frontend-javascript-test)
 
 ## Чтобы запустить:
 
