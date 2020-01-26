@@ -1,4 +1,4 @@
-Проект сделан на базе [Create React App](https://github.com/facebook/create-react-app).
+## Задание [здесь] (https://github.com/fugr-ru/frontend-javascript-test)
 
 ## Чтобы запустить:
 
@@ -10,4 +10,7 @@
 
 Запуск приложения в режиме разработки.<br />
 Откроет [http://localhost:3000](http://localhost:3000).
+
+
+Проект сделан на базе [Create React App](https://github.com/facebook/create-react-app).
 
